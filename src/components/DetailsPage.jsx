@@ -39,7 +39,6 @@ export const DetailsPage = ({ moviesList, onFavoriteClick }) => {
           >
             {isFavorite(movieId) ? "❤️" : "🤍"}
           </button>
-
           <h2 className="text-xl md:text-2xl font-semibold mt-16 md:mt-0">
             {movieDetails ? movieDetails.title : "No movie"}
           </h2>

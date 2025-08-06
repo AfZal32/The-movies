@@ -78,7 +78,6 @@ const UserProfileDropdown = () => {
             Favorites
           </Link>
           <div className="border-1 w-full rounded-b-full  border-blue-500" />
-
           <div className=" w-full mt-2 flex justify-end">
             <button
               onClick={handleLogout}

@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import UserProfileDropdown from "./DropDown";
 import { auth } from "./firebase";
+import UserProfileDropdown from "./DropDown";
 import { onAuthStateChanged } from "firebase/auth";
+import { Link, useNavigate } from "react-router-dom";
 import { useMovieContext } from "../context/MovieContext";
+import React, { useEffect, useState, useRef } from "react";
 
 export const Navbar = ({ onSearchClick, refs }) => {
   const { favorites, setFavorites } = useMovieContext();

@@ -61,7 +61,6 @@ export const LoginPage = () => {
           Sign in to your account
         </h2>
       </div>
-
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form
           className="space-y-6"
@@ -92,7 +91,6 @@ export const LoginPage = () => {
               />
             </div>
           </div>
-
           <div>
             <div className="flex items-center justify-between">
               <label
@@ -125,7 +123,6 @@ export const LoginPage = () => {
               />
             </div>
           </div>
-
           <div>
             <button
               type="submit"
@@ -136,7 +133,6 @@ export const LoginPage = () => {
           </div>
         </form>
         <p className="text-red-500 text-sm mt-1">{error}</p>
-
         <p className="mt-10 text-center text-sm/6 text-gray-500">
           Not a user?
           <Link
