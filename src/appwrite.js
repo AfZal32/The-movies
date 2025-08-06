@@ -1,13 +1,16 @@
 import { Client, Databases, ID, Query } from "appwrite";
 
+// import ids from env file
 const PROJECT_ID = import.meta.env.VITE_APPWRITE_PROJECT_ID;
 const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
 const COLLECTION_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
 
+// Create a new clint in appwrite
 const client = new Client()
   .setEndpoint("https://nyc.cloud.appwrite.io/v1")
   .setProject(PROJECT_ID);
 
+// Create new DB using client
 const database = new Databases(client);
 
 export const updateSearchCount = async (searchTerm, movie) => {

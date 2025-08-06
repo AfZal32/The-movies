@@ -1,11 +1,11 @@
 import React from "react";
 
-export const Spinner = () => {
+export const Spinner = ({ size = 6 }) => {
   return (
-    <div role="status" className="w-full h-screen flex mt-10 justify-center">
+    <div role="status" className="w-full  flex  justify-center">
       <svg
         aria-hidden="true"
-        className="w-10 h-10 text-gray-200 animate-spin dark:text-gray-600 fill-indigo-600"
+        className={`w-${size} h-${size} text-white  animate-spin  fill-indigo-600`}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -19,7 +19,8 @@ export const Spinner = () => {
           fill="currentFill"
         />
       </svg>
-      <span className="sr-only">Loading...</span>
+      {/* solve tailwindcss issue for w-6 classes */}
+      <div className="w-6"> </div>
     </div>
   );
 };

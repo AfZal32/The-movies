@@ -1,9 +1,17 @@
 import { useDebounce } from "react-use";
-import { Search } from "./components/Search";
-import { Spinner } from "./components/Spinner";
-import { MovieCard } from "./components/MovieCard";
-import React, { useEffect, useState } from "react";
+import { Navbar } from "./components/Navbar";
+import { auth } from "./components/firebase";
+import "react-toastify/dist/ReactToastify.css";
+import { Routes, Route } from "react-router-dom";
+import { HomePage } from "./components/HomePage";
+import { LoginPage } from "./components/LoginPage";
+import { SignUpPage } from "./components/SignUpPage";
+import { DetailsPage } from "./components/DetailsPage";
+import { toast, ToastContainer } from "react-toastify";
+import React, { useEffect, useState, useRef } from "react";
+import { FavoritesPage } from "./components/FavoritesPage";
 import { updateSearchCount, getTrendingMovies } from "./appwrite";
+import { MovieProvider, useMovieContext } from "./context/MovieContext";
 
 // API key and url
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -19,32 +27,41 @@ const API_OPTIONS = {
 };
 
 const App = () => {
+  const [isLoading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [moviesList, setMoviesList] = useState([]);
-  const [isLoading, setSetLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [debouncedSearchTerms, setDebouncedSearchTerms] = useState();
+
+  // Custom hook for accessing movie context
+  const { toggleFavorite } = useMovieContext();
+
+  // Handle scroll to search
+  const searchRef = useRef(null);
+  const moviesRef = useRef(null);
 
   // custom react hook for fixed time delay for api request
   useDebounce(() => setDebouncedSearchTerms(searchTerm), 500, [searchTerm]);
 
   // Fetch movies from API
   const fetchMovies = async (query = "") => {
-    setSetLoading(true);
+    setLoading(true);
     setErrorMessage("");
     try {
-      const endPoint = query
+      const endPoint = query //checks any query
         ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
         : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
-      const response = await fetch(endPoint, API_OPTIONS);
+      const response = await fetch(endPoint, API_OPTIONS); //Fetch movies
 
+      // Custom error if got any error on response
       if (!response.ok) {
         throw new Error("Failed to fetch movies");
       }
 
       const data = await response.json();
 
+      //Error handler for data from api
       if (data.Response === "False") {
         setErrorMessage(data.Error || "Failed to fetch movies");
         setMoviesList([]);
@@ -53,6 +70,7 @@ const App = () => {
 
       setMoviesList(data.results || []);
 
+      //Function for update trending movies count
       if (query && data.results.length > 0) {
         await updateSearchCount(query, data.results[0]);
       }
@@ -60,12 +78,13 @@ const App = () => {
       console.log(error);
       setErrorMessage("Error fetching movies. Please try again later.");
     } finally {
-      setSetLoading(false);
+      setLoading(false);
     }
   };
 
-  // Function for fetch trending movies form DB
+  // Function for fetch trending movies form appwrite DB
   const loadTrendingMovies = async () => {
+    setLoading(true);
     try {
       const movie = await getTrendingMovies();
       setTrendingMovies(movie);
@@ -74,60 +93,66 @@ const App = () => {
     }
   };
 
+  // Handle favorites
+  const onFavoriteClick = (movieId) => {
+    auth.currentUser
+      ? toggleFavorite(movieId)
+      : toast.warning(" You must be logged in to access this functionality");
+  };
+
+  //Render fetch movies on search state change
   useEffect(() => {
     fetchMovies(debouncedSearchTerms);
   }, [debouncedSearchTerms]);
 
+  //Initial render for trending movies
   useEffect(() => {
     loadTrendingMovies();
   }, []);
 
   return (
-    <main>
-      <div className="pattern" />
-      <div className="wrapper">
-        {/* Header */}
-        <header>
-          <img src="/images/hero.png" alt="hero" />
-          <h1>
-            Find <span className="text-gradient">Movies</span> You'll Enjoy
-            Without the Hassle
-          </h1>
-          <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        </header>
-
-        {/* Hero component */}
-        {trendingMovies.length > 0 && (
-          <section className="trending">
-            <h2>Trending movies</h2>
-            <ul>
-              {trendingMovies.map((movie, index) => (
-                <li key={movie.$id}>
-                  <p>{index + 1}</p>
-                  <img src={movie.poster_url} alt={movie.title} />
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* Content */}
-        <section className="all-movies">
-          <h2 className="text-white mt-5">All Movies</h2>
-          {isLoading ? (
-            <Spinner />
-          ) : errorMessage ? (
-            <p className="text-red-500">{errorMessage}</p>
-          ) : (
-            <ul>
-              {moviesList.map((movie) => (
-                <MovieCard key={movie.id} movie={movie} />
-              ))}
-            </ul>
-          )}
-        </section>
-      </div>
-    </main>
+    <MovieProvider>
+      <Navbar refs={{ movies: moviesRef, search: searchRef }} />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <HomePage
+              trendingMovies={trendingMovies}
+              isLoading={isLoading}
+              searchRef={searchRef}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              moviesRef={moviesRef}
+              errorMessage={errorMessage}
+              moviesList={moviesList}
+              onFavoriteClick={onFavoriteClick}
+            />
+          }
+        />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/sign-up" element={<SignUpPage />} />
+        <Route
+          path="/favorites"
+          element={
+            <FavoritesPage
+              moviesList={moviesList}
+              onFavoriteClick={onFavoriteClick}
+            />
+          }
+        />
+        <Route
+          path="movie/:movieId"
+          element={
+            <DetailsPage
+              onFavoriteClick={onFavoriteClick}
+              moviesList={moviesList}
+            />
+          }
+        />
+      </Routes>
+      <ToastContainer style={{ paddingTop: "10px" }} />
+    </MovieProvider>
   );
 };
 
