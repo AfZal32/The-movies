@@ -134,7 +134,7 @@ export const LoginPage = () => {
         </form>
         <p className="text-red-500 text-sm mt-1">{error}</p>
         <p className="mt-10 text-center text-sm/6 text-gray-500">
-          Not a user?
+          Not a user?<span> </span>
           <Link
             to="/sign-up"
             className="font-semibold text-blue-700 hover:text-blue-500"

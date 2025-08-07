@@ -60,16 +60,16 @@ const UserProfileDropdown = () => {
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute left-1/2 -translate-x-1/2 md:left-auto md:right-0 p-2 mt-2 w-48 bg-[#150627] border border-blue-700 rounded-md shadow-lg z-20">
+        <div className="absolute left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-0 p-2 mt-2 w-48 bg-[#150627] border border-blue-700 rounded-md shadow-lg z-20">
           <div className="flex items-center px-4 py-3">
             <img
               src="images/avatar-profile.jpg"
               alt="Avatar"
               className="w-10 h-10 rounded-full"
             />
-            <div className="ml-3 mb-1">
-              <p className="text-xs text-white">{auth.currentUser.email}</p>
-            </div>
+            <span className="ml-1 text-xs text-white truncate block ">
+              {auth.currentUser.email}
+            </span>
           </div>
           <Link
             to={"/favorites"}

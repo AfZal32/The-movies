@@ -111,7 +111,7 @@ const App = () => {
   }, []);
 
   return (
-    <MovieProvider>
+    <>
       <Navbar refs={{ movies: moviesRef, search: searchRef }} />
       <Routes>
         <Route
@@ -152,7 +152,7 @@ const App = () => {
         />
       </Routes>
       <ToastContainer style={{ paddingTop: "10px" }} />
-    </MovieProvider>
+    </>
   );
 };
 

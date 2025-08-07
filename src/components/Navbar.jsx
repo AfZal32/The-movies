@@ -46,7 +46,7 @@ export const Navbar = ({ onSearchClick, refs }) => {
       >
         <div className=" max-w-screen-xl flex flex-wrap items-center  justify-between mx-auto py-2 ">
           <Link
-            to={"/"}
+            to="/"
             className="flex items-center space-x-3 rtl:space-x-reverse"
             onClick={() => setMenuOpen(false)}
           >
@@ -103,7 +103,7 @@ export const Navbar = ({ onSearchClick, refs }) => {
             )}
           </button>
           <div
-            className={`${menuOpen ? "" : "hidden"}  w-full md:block md:w-auto`}
+            className={`${menuOpen ? "" : "hidden"} w-full md:block md:w-auto`}
             id="navbar-default"
           >
             <ul className="font-small flex flex-col items-center p-4 md:p-0 mt-4 bg-[#150627] md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0  ">
@@ -121,7 +121,7 @@ export const Navbar = ({ onSearchClick, refs }) => {
                 <Link
                   to={"/"}
                   onClick={(e) => {
-                    e.preventDefault();
+                    // e.preventDefault();
                     handleScrollToSearch(refs.search);
                     setMenuOpen(false);
                   }}

@@ -19,6 +19,8 @@ export const useMovieContext = () => useContext(MovieContext);
 export const MovieProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
 
+  console.log("favorites", favorites);
+
   // Function for get favorite movies from firebase
   const getMoviesFromFirebase = () => {
     onAuthStateChanged(auth, async (user) => {
@@ -54,16 +56,18 @@ export const MovieProvider = ({ children }) => {
     try {
       if (isFavorite(movieId)) {
         await deleteDoc(moviesRefDb);
-        setFavorites((prev) => prev.filter((m) => m.id !== movieId));
+        setFavorites(favorites?.filter(({ id }) => id !== movieId));
       } else {
         await setDoc(moviesRefDb, {
           id: movieId,
           email: auth.currentUser.email,
           createdAt: new Date(),
         });
-        setFavorites((prev) => [
-          ...prev,
-          { id: movieId, email: auth.currentUser.email, createdAt: new Date() },
+        setFavorites([
+          ...favorites,
+          {
+            id: movieId,
+          },
         ]);
       }
     } catch (error) {
@@ -80,7 +84,9 @@ export const MovieProvider = ({ children }) => {
   // Handle favorites effect
   useEffect(() => {
     getMoviesFromFirebase();
-  }, [favorites]);
+  }, []);
+
+  useEffect(() => {});
 
   return (
     <MovieContext.Provider value={value}>{children}</MovieContext.Provider>
