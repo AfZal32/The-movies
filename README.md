@@ -1,3 +1,5 @@
-<h1>The Movie App<h1>
+<h1>The Movie App</h1>
 
-<img src="public\images\home-page.png">
+<a href="https://themovies.netlify.app/">Click here for demo</a>
+
+<img src="public\images\home-page.png" alt="Home-page"/>
