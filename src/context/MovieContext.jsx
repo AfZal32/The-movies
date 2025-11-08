@@ -19,8 +19,6 @@ export const useMovieContext = () => useContext(MovieContext);
 export const MovieProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
 
-  console.log("favorites", favorites);
-
   // Function for get favorite movies from firebase
   const getMoviesFromFirebase = () => {
     onAuthStateChanged(auth, async (user) => {
